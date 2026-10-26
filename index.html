@@ -356,12 +356,14 @@
     gap: clamp(1rem, 3vw, 2.6rem);
   }
 
+  /* Le QR porte une URL de 92 caracteres, donc beaucoup de modules : il doit
+     rester grand pour se scanner depuis une table, pas depuis 30 cm. */
   .qr-cadre {
     background: var(--creme);
     padding: clamp(.6rem, 1.4vw, 1rem);
     display: grid;
     place-items: center;
-    width: clamp(120px, 20vw, 230px);
+    width: clamp(170px, 27vw, 340px);
     aspect-ratio: 1;
     box-sizing: border-box;
   }
@@ -380,7 +382,49 @@
     padding: .4em;
   }
 
-  .inscription__texte { min-width: 0; }
+  .inscription__texte {
+    min-width: 0;
+    display: grid;
+    gap: clamp(.35rem, 1.2vh, .8rem);
+  }
+
+  /* ---- Comment ça marche ici ---- */
+
+  .regles {
+    display: grid;
+    gap: clamp(.3rem, 1vh, .6rem);
+    min-width: 0;
+  }
+
+  .regle {
+    display: grid;
+    grid-template-columns: minmax(7rem, 14rem) 1fr;
+    align-items: baseline;
+    gap: clamp(.6rem, 1.8vw, 1.5rem);
+    padding: clamp(.35rem, 1vh, .7rem) clamp(.5rem, 1.4vw, 1rem);
+    background: linear-gradient(90deg, rgba(103, 46, 42, .55), rgba(103, 46, 42, .12));
+    border-left: 4px solid var(--orange);
+    min-width: 0;
+  }
+
+  .regle__quoi {
+    font-family: var(--titre);
+    font-size: clamp(1rem, 2.1vw, 1.65rem);
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--creme);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .regle__detail {
+    font-family: var(--corps);
+    font-size: clamp(.9rem, 1.85vw, 1.35rem);
+    color: var(--creme-doux);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
 
   /* ---- Marqueur d'exemple ---- */
 
@@ -467,6 +511,7 @@
     .jour__date { grid-column: 1 / -1; }
     .ligne { grid-template-columns: 1.8em 1fr auto; }
     .ligne__stat { display: none; }
+    .regle { grid-template-columns: 1fr; gap: .15rem; }
   }
 </style>
 </head>
@@ -513,7 +558,8 @@
   var MATCHS = [];
   var SOIREES = [];
   var CLASSEMENT = { exemple: true, manche: "", equipes: [] };
-  var INSCRIPTION = { url: "", libelle: "" };
+  var REGLES = { exemple: true, titre: "", lignes: [], note: "" };
+  var QR = { url: "", libelle: "", eyebrow: "", titre: "", texte: "", note: "" };
 
   var SOURCE_DONNEES = "evenements.json";
   var PERIODE_RELECTURE = 600000; // 10 minutes
@@ -710,20 +756,41 @@
         'Rendu d\'exemple. Les scores se lisent sur les cartes des deux cibles DARTSLIVE3 du bar.</p>';
   }
 
-  function panneauInscription() {
+  // Les quatre points que ses clients disent decouvrir trop tard dans leurs
+  // avis Google. L'heure de fin de service revient quatre fois, c'est le
+  // reproche le plus repete et le plus recent du releve du 26/10/2026.
+  function panneauRegles() {
+    var lignes = "";
+    REGLES.lignes.forEach(function (r) {
+      lignes += '' +
+        '<div class="regle">' +
+          '<div class="regle__quoi">' + r.quoi + '</div>' +
+          '<div class="regle__detail">' + r.detail + '</div>' +
+        '</div>';
+    });
+
     return '' +
-      '<p class="eyebrow">Garde ta place</p>' +
-      '<div class="inscription">' +
-        '<div class="qr-cadre" id="qr"><div class="qr-repli">' + INSCRIPTION.libelle + '</div></div>' +
-        '<div class="inscription__texte">' +
-          '<h1 class="titre-geant" style="font-size:clamp(1.7rem,4.8vw,3.6rem)">Inscris ton équipe</h1>' +
-          '<p class="sous-titre">Le classement, la date de la prochaine manche et la prog du mois. Un scan, et tu es prévenu la veille.</p>' +
-        '</div>' +
-      '</div>' +
-      '<p class="note-source">' + marqueurExemple() + ' Le QR pointe vers son Instagram tant que la page d\'inscription n\'existe pas. C\'est elle qui construira la liste de contacts du bar.</p>';
+      '<p class="eyebrow">Bienvenue</p>' +
+      '<h1 class="titre-geant" style="font-size:clamp(1.6rem,4.4vw,3.2rem)">' + (REGLES.titre || "Comment ça marche ici") + '</h1>' +
+      '<div class="regles">' + lignes + '</div>' +
+      (REGLES.note || REGLES.exemple ?
+        '<p class="note-source">' + (REGLES.exemple ? marqueurExemple() + ' ' : '') + (REGLES.note || '') + '</p>' : '');
   }
 
-  var PANNEAUX = [panneauCeSoir, panneauMatch, panneauSemaine, panneauClassement, panneauInscription];
+  function panneauQr() {
+    return '' +
+      '<p class="eyebrow">' + (QR.eyebrow || "Avant de partir") + '</p>' +
+      '<div class="inscription">' +
+        '<div class="qr-cadre" id="qr"><div class="qr-repli">' + QR.libelle + '</div></div>' +
+        '<div class="inscription__texte">' +
+          '<h1 class="titre-geant" style="font-size:clamp(1.7rem,4.8vw,3.6rem)">' + QR.titre + '</h1>' +
+          '<p class="sous-titre">' + QR.texte + '</p>' +
+        '</div>' +
+      '</div>' +
+      (QR.note ? '<p class="note-source">' + QR.note + '</p>' : '');
+  }
+
+  var PANNEAUX = [panneauCeSoir, panneauMatch, panneauSemaine, panneauRegles, panneauClassement, panneauQr];
 
   // ---------------------------------------------------------------
   // Montage et rotation
@@ -805,7 +872,21 @@
         MATCHS = d.matchs || [];
         SOIREES = d.soirees || [];
         if (d.classement) { CLASSEMENT = d.classement; }
-        if (d.inscription) { INSCRIPTION = d.inscription; }
+        if (d.regles) { REGLES = d.regles; }
+        // `qr` a remplace `inscription` le 26/10/2026. Le repli garde la page
+        // fonctionnelle si un ancien fichier de donnees traine encore.
+        if (d.qr) {
+          QR = d.qr;
+        } else if (d.inscription) {
+          QR = {
+            url: d.inscription.url,
+            libelle: d.inscription.libelle,
+            eyebrow: "Garde ta place",
+            titre: "Inscris ton équipe",
+            texte: "Le classement, la date de la prochaine manche et la prog du mois.",
+            note: ""
+          };
+        }
         monte();
       })
       .catch(function (e) {
@@ -850,15 +931,15 @@
     hote.innerHTML = "";
     try {
       new QRCode(hote, {
-        text: INSCRIPTION.url,
-        width: 200,
-        height: 200,
+        text: QR.url,
+        width: 320,
+        height: 320,
         colorDark: "#15100F",
         colorLight: "#F3EDE3",
         correctLevel: QRCode.CorrectLevel.M
       });
     } catch (e) {
-      hote.innerHTML = '<div class="qr-repli">' + INSCRIPTION.libelle + '</div>';
+      hote.innerHTML = '<div class="qr-repli">' + QR.libelle + '</div>';
     }
   }
 

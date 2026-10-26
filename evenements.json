@@ -164,8 +164,40 @@
       }
     ]
   },
+  "regles": {
+    "exemple": true,
+    "titre": "Comment ça marche ici",
+    "lignes": [
+      {
+        "quoi": "On se sert",
+        "detail": "Prends ta carte au comptoir, les tireuses sont à toi. Pas de service à table."
+      },
+      {
+        "quoi": "Dernier service",
+        "detail": "00h30. Le bar ferme à 1h."
+      },
+      {
+        "quoi": "Les verres",
+        "detail": "Ils sont consignés. Rapporte-les au comptoir avant de partir."
+      },
+      {
+        "quoi": "À manger",
+        "detail": "Planches, tapas et plancha au comptoir, à toute heure."
+      }
+    ],
+    "note": "Quatre points relevés dans les avis Google du bar. Valeurs à confirmer avant affichage en salle."
+  },
+  "qr": {
+    "url": "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12c9ffd5527724f1:0xc236335cc8bcae2!12e1",
+    "libelle": "Avis Google du Fût",
+    "eyebrow": "Avant de partir",
+    "titre": "Dis-le sur Google",
+    "texte": "4,5 sur 530 avis. Si la soirée t'a plu, trente secondes suffisent à le dire.",
+    "note": "Le QR ouvre le formulaire d'avis de la fiche du bar, testé le 26/10/2026."
+  },
   "inscription": {
     "url": "https://www.instagram.com/aufut_salon/",
-    "libelle": "instagram.com/aufut_salon"
+    "libelle": "instagram.com/aufut_salon",
+    "commentaire": "Conserve pour memoire. Le panneau QR lit desormais la cle `qr`. Basculer sur l'inscription a la ligue = recopier son url et son libelle dans `qr`."
   }
 }
