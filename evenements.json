@@ -1,0 +1,171 @@
+{
+  "maj": "2026-10-26",
+  "commentaire": "Matchs releves et recoupes le 23/10/2026 sur L'Equipe, Footamax et la billetterie de l'OM. Les familles de soirees sont reelles, LEURS DATES SONT DES EMPLACEMENTS tant que la prog du mois n'est pas relevee. Le classement est un rendu d'exemple.",
+  "matchs": [
+    {
+      "date": "2026-11-01",
+      "heure": "20h45",
+      "domicile": "Marseille",
+      "exterieur": "Toulouse",
+      "competition": "Ligue 1",
+      "journee": "9e journée"
+    },
+    {
+      "date": "2026-11-05",
+      "heure": "21h00",
+      "domicile": "Leverkusen",
+      "exterieur": "Marseille",
+      "competition": "Ligue Europa",
+      "journee": "4e journée"
+    },
+    {
+      "date": "2026-11-08",
+      "heure": "20h45",
+      "domicile": "Lens",
+      "exterieur": "Marseille",
+      "competition": "Ligue 1",
+      "journee": "10e journée"
+    },
+    {
+      "date": "2026-11-22",
+      "heure": "20h45",
+      "domicile": "Marseille",
+      "exterieur": "Le Mans",
+      "competition": "Ligue 1",
+      "journee": "11e journée"
+    },
+    {
+      "date": "2026-11-26",
+      "heure": "18h45",
+      "domicile": "Marseille",
+      "exterieur": "Levski Sofia",
+      "competition": "Ligue Europa",
+      "journee": "5e journée"
+    },
+    {
+      "date": "2026-11-29",
+      "heure": "15h00",
+      "domicile": "Auxerre",
+      "exterieur": "Marseille",
+      "competition": "Ligue 1",
+      "journee": "12e journée"
+    },
+    {
+      "date": "2026-12-06",
+      "heure": "20h45",
+      "domicile": "Marseille",
+      "exterieur": "Nice",
+      "competition": "Ligue 1",
+      "journee": "13e journée"
+    },
+    {
+      "date": "2026-12-10",
+      "heure": "18h45",
+      "domicile": "Marseille",
+      "exterieur": "Celta Vigo",
+      "competition": "Ligue Europa",
+      "journee": "6e journée"
+    },
+    {
+      "date": "2026-12-13",
+      "heure": "20h45",
+      "domicile": "Lyon",
+      "exterieur": "Marseille",
+      "competition": "Ligue 1",
+      "journee": "14e journée"
+    }
+  ],
+  "soirees": [
+    {
+      "date": "2026-10-27",
+      "heure": "20h00",
+      "titre": "Tournoi de fléchettes",
+      "detail": "Manche 3 de la ligue",
+      "exemple": true
+    },
+    {
+      "date": "2026-10-28",
+      "heure": "20h30",
+      "titre": "Blind test",
+      "detail": "Équipes de 2 à 6",
+      "exemple": true
+    },
+    {
+      "date": "2026-10-29",
+      "heure": "20h00",
+      "titre": "Beer pong",
+      "detail": "Tableau à 16 équipes",
+      "exemple": true
+    },
+    {
+      "date": "2026-10-30",
+      "heure": "21h00",
+      "titre": "Soirée DJ",
+      "detail": "",
+      "exemple": true
+    },
+    {
+      "date": "2026-10-31",
+      "heure": "21h00",
+      "titre": "Halloween",
+      "detail": "Déguisement conseillé",
+      "exemple": true
+    },
+    {
+      "date": "2026-11-03",
+      "heure": "20h00",
+      "titre": "Tournoi de fléchettes",
+      "detail": "Manche 4 de la ligue",
+      "exemple": true
+    },
+    {
+      "date": "2026-11-04",
+      "heure": "20h30",
+      "titre": "Blind test",
+      "detail": "Équipes de 2 à 6",
+      "exemple": true
+    },
+    {
+      "date": "2026-11-06",
+      "heure": "21h00",
+      "titre": "Soirée DJ",
+      "detail": "",
+      "exemple": true
+    }
+  ],
+  "classement": {
+    "exemple": true,
+    "manche": "Manche 2 sur 8",
+    "equipes": [
+      {
+        "equipe": "Les Trois Fûts",
+        "joues": 2,
+        "pts": 6
+      },
+      {
+        "equipe": "Double Top",
+        "joues": 2,
+        "pts": 4
+      },
+      {
+        "equipe": "Les Houblonnés",
+        "joues": 2,
+        "pts": 3
+      },
+      {
+        "equipe": "Bull's Eye Foch",
+        "joues": 2,
+        "pts": 3
+      },
+      {
+        "equipe": "La Mousse",
+        "joues": 2,
+        "pts": 1
+      }
+    ]
+  },
+  "inscription": {
+    "url": "https://www.instagram.com/aufut_salon/",
+    "libelle": "instagram.com/aufut_salon"
+  }
+}

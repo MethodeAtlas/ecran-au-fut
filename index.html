@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écran du Fût</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+  /* Layout : un écran plein cadre pour la salle, bandeaux inclinés repris de leurs affiches, cinq panneaux qui tournent en boucle. Monothème sombre, assumé : c'est un écran de bar le soir. */
+  :root {
+    --noir: #15100F;
+    --noir-2: #1F1716;
+    --bordeaux: #672E2A;
+    --bordeaux-clair: #8B3F38;
+    --orange: #EE5522;
+    --creme: #F3EDE3;
+    --creme-doux: #BFB2A5;
+    --display: "Anton", "Arial Narrow", Impact, sans-serif;
+    --titre: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --corps: "Barlow", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--noir);
+    color: var(--creme);
+    font-family: var(--corps);
+    overflow: hidden;
+  }
+
+  .fond {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(120% 90% at 50% -10%, rgba(103, 46, 42, .85) 0%, rgba(103, 46, 42, 0) 60%),
+      radial-gradient(70% 60% at 100% 110%, rgba(238, 85, 34, .22) 0%, rgba(238, 85, 34, 0) 65%),
+      var(--noir);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    opacity: .05;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(0deg, rgba(243, 237, 227, .6) 0 1px, transparent 1px 3px);
+  }
+
+  .cadre {
+    position: relative;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: clamp(.6rem, 1.6vh, 1.4rem);
+    padding-block: clamp(.7rem, 2vh, 1.6rem);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+
+  /* ---- Bandeau du haut ---- */
+
+  .enseigne {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .enseigne__nom {
+    position: relative;
+    background: var(--bordeaux);
+    transform: skewX(-7deg);
+    padding: .35em 1.1em .3em;
+    box-shadow: inset 0 -4px 0 var(--orange);
+  }
+
+  .enseigne__nom span {
+    display: block;
+    transform: skewX(7deg);
+    font-family: var(--display);
+    font-size: clamp(1rem, 2.4vw, 1.75rem);
+    letter-spacing: .04em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .horloge {
+    display: flex;
+    align-items: baseline;
+    gap: .7em;
+    font-family: var(--titre);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .horloge__heure {
+    font-family: var(--display);
+    font-size: clamp(1.4rem, 3.4vw, 2.6rem);
+    line-height: 1;
+    color: var(--creme);
+  }
+
+  .horloge__jour {
+    font-size: clamp(.8rem, 1.5vw, 1.1rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--creme-doux);
+  }
+
+  /* ---- Panneaux ---- */
+
+  .scene { position: relative; min-width: 0; }
+
+  .panneau {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    gap: clamp(.5rem, 1.4vh, 1.1rem);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .5s ease, transform .5s ease;
+    pointer-events: none;
+    min-width: 0;
+  }
+
+  .panneau[data-actif="oui"] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-self: start;
+    align-items: center;
+    gap: .55em;
+    font-family: var(--titre);
+    font-size: clamp(.72rem, 1.4vw, 1rem);
+    font-weight: 700;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: clamp(18px, 3vw, 44px);
+    height: 3px;
+    background: var(--orange);
+  }
+
+  .titre-geant {
+    font-family: var(--display);
+    font-size: clamp(2.1rem, 7.4vw, 6rem);
+    line-height: .92;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    margin: 0;
+    transform: skewX(-6deg);
+    text-shadow:
+      3px 3px 0 var(--bordeaux),
+      6px 6px 0 rgba(0, 0, 0, .45);
+  }
+
+  .sous-titre {
+    font-family: var(--titre);
+    font-size: clamp(1rem, 2.3vw, 1.7rem);
+    font-weight: 600;
+    color: var(--creme-doux);
+    margin: 0;
+    max-width: 48ch;
+  }
+
+  /* Bloc date et coup d'envoi, repris du gabarit des affiches */
+  .coup-denvoi {
+    display: inline-grid;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: clamp(.8rem, 2.4vw, 2.2rem);
+    border-top: 2px solid rgba(243, 237, 227, .35);
+    border-bottom: 2px solid rgba(243, 237, 227, .35);
+    padding-block: clamp(.4rem, 1.2vh, .9rem);
+    justify-self: start;
+  }
+
+  .coup-denvoi dt {
+    font-family: var(--titre);
+    font-size: clamp(.7rem, 1.3vw, .95rem);
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--creme-doux);
+  }
+
+  .coup-denvoi dd {
+    margin: .1em 0 0;
+    font-family: var(--display);
+    font-size: clamp(1.3rem, 3.2vw, 2.4rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .coup-denvoi dd.accent { color: var(--orange); }
+
+  /* L'affiche de match : les deux équipes empilées avec le VS */
+  .affiche {
+    display: grid;
+    gap: clamp(.2rem, .8vh, .6rem);
+    justify-items: start;
+  }
+
+  .equipe {
+    font-family: var(--display);
+    font-size: clamp(1.9rem, 6.6vw, 5.2rem);
+    line-height: .95;
+    text-transform: uppercase;
+    transform: skewX(-6deg);
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, .5);
+  }
+
+  .vs {
+    background: var(--orange);
+    color: var(--noir);
+    font-family: var(--display);
+    font-size: clamp(.9rem, 2vw, 1.5rem);
+    line-height: 1;
+    padding: .25em .9em .2em;
+    transform: skewX(-12deg);
+    margin-block: clamp(.1rem, .6vh, .35rem);
+  }
+
+  .vs span { display: block; transform: skewX(12deg); }
+
+  /* ---- La semaine ---- */
+
+  .semaine {
+    display: grid;
+    gap: clamp(.25rem, .8vh, .5rem);
+    min-width: 0;
+  }
+
+  .jour {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, 8rem) 1fr auto;
+    align-items: center;
+    gap: clamp(.5rem, 1.6vw, 1.3rem);
+    padding: clamp(.35rem, 1vh, .7rem) clamp(.5rem, 1.4vw, 1rem);
+    background: linear-gradient(90deg, rgba(103, 46, 42, .55), rgba(103, 46, 42, .12));
+    border-left: 4px solid var(--bordeaux-clair);
+    min-width: 0;
+  }
+
+  .jour[data-match="oui"] { border-left-color: var(--orange); }
+
+  .jour[data-aujourdhui="oui"] {
+    background: linear-gradient(90deg, rgba(238, 85, 34, .45), rgba(238, 85, 34, .08));
+    border-left-color: var(--creme);
+  }
+
+  .jour__date {
+    font-family: var(--titre);
+    font-size: clamp(.78rem, 1.5vw, 1.15rem);
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--creme);
+  }
+
+  .jour__quoi {
+    font-family: var(--titre);
+    font-size: clamp(.9rem, 1.9vw, 1.45rem);
+    font-weight: 600;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .jour__quoi em {
+    font-style: normal;
+    color: var(--creme-doux);
+    font-weight: 500;
+  }
+
+  .jour__heure {
+    font-family: var(--display);
+    font-size: clamp(.9rem, 1.9vw, 1.4rem);
+    font-variant-numeric: tabular-nums;
+    color: var(--orange);
+  }
+
+  /* ---- Classement ---- */
+
+  .classement {
+    display: grid;
+    gap: clamp(.2rem, .7vh, .45rem);
+    min-width: 0;
+  }
+
+  .ligne {
+    display: grid;
+    grid-template-columns: 2.2em 1fr auto auto;
+    align-items: center;
+    gap: clamp(.5rem, 1.6vw, 1.2rem);
+    padding: clamp(.3rem, .9vh, .6rem) clamp(.5rem, 1.4vw, .9rem);
+    background: rgba(243, 237, 227, .06);
+    min-width: 0;
+  }
+
+  .ligne[data-rang="1"] { background: rgba(238, 85, 34, .28); }
+  .ligne[data-rang="2"], .ligne[data-rang="3"] { background: rgba(103, 46, 42, .45); }
+
+  .ligne__rang {
+    font-family: var(--display);
+    font-size: clamp(1rem, 2.2vw, 1.7rem);
+    line-height: 1;
+    color: var(--orange);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ligne[data-rang="1"] .ligne__rang { color: var(--creme); }
+
+  .ligne__equipe {
+    font-family: var(--titre);
+    font-size: clamp(.9rem, 1.9vw, 1.4rem);
+    font-weight: 600;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ligne__stat {
+    font-family: var(--corps);
+    font-size: clamp(.7rem, 1.3vw, .95rem);
+    color: var(--creme-doux);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .ligne__pts {
+    font-family: var(--display);
+    font-size: clamp(1rem, 2.1vw, 1.6rem);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* ---- Panneau d'inscription ---- */
+
+  .inscription {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.6rem);
+  }
+
+  .qr-cadre {
+    background: var(--creme);
+    padding: clamp(.6rem, 1.4vw, 1rem);
+    display: grid;
+    place-items: center;
+    width: clamp(120px, 20vw, 230px);
+    aspect-ratio: 1;
+    box-sizing: border-box;
+  }
+
+  .qr-cadre img, .qr-cadre canvas { display: block; max-width: 100%; height: auto; }
+
+  .qr-cadre table { border-collapse: collapse; }
+
+  .qr-repli {
+    font-family: var(--titre);
+    font-weight: 700;
+    color: var(--noir);
+    text-align: center;
+    font-size: clamp(.7rem, 1.4vw, .95rem);
+    overflow-wrap: anywhere;
+    padding: .4em;
+  }
+
+  .inscription__texte { min-width: 0; }
+
+  /* ---- Marqueur d'exemple ---- */
+
+  .exemple {
+    display: inline-flex;
+    align-items: center;
+    gap: .4em;
+    font-family: var(--corps);
+    font-size: clamp(.62rem, 1.05vw, .78rem);
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--creme-doux);
+    border: 1px solid rgba(243, 237, 227, .3);
+    padding: .15em .5em;
+    white-space: nowrap;
+  }
+
+  .note-source {
+    font-size: clamp(.68rem, 1.2vw, .85rem);
+    color: var(--creme-doux);
+    margin: 0;
+    max-width: 70ch;
+  }
+
+  /* ---- Pied ---- */
+
+  .pied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 2px solid var(--orange);
+    padding-top: clamp(.4rem, 1.2vh, .8rem);
+  }
+
+  .pied__adresse {
+    font-family: var(--titre);
+    font-size: clamp(.72rem, 1.4vw, 1.05rem);
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--creme-doux);
+  }
+
+  .pastilles {
+    display: flex;
+    gap: .45rem;
+    align-items: center;
+  }
+
+  .pastille {
+    width: clamp(18px, 3.4vw, 34px);
+    height: 4px;
+    background: rgba(243, 237, 227, .28);
+    overflow: hidden;
+  }
+
+  .pastille[data-actif="oui"] { background: rgba(243, 237, 227, .28); }
+
+  .pastille i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--orange);
+  }
+
+  .pastille[data-actif="oui"] i {
+    width: 100%;
+    animation: remplir var(--duree, 12s) linear forwards;
+  }
+
+  @keyframes remplir { from { width: 0 } to { width: 100% } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panneau { transition: none; }
+    .pastille[data-actif="oui"] i { animation: none; width: 100%; }
+  }
+
+  @media (max-width: 560px) {
+    .inscription { grid-template-columns: 1fr; justify-items: start; }
+    .jour { grid-template-columns: 1fr auto; }
+    .jour__date { grid-column: 1 / -1; }
+    .ligne { grid-template-columns: 1.8em 1fr auto; }
+    .ligne__stat { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fond"></div>
+<div class="grain"></div>
+
+<div class="cadre">
+  <header class="enseigne">
+    <div class="enseigne__nom"><span>Au Fût et à Mesure</span></div>
+    <div class="horloge">
+      <div class="horloge__jour" id="date-jour">&nbsp;</div>
+      <div class="horloge__heure" id="date-heure">&nbsp;</div>
+    </div>
+  </header>
+
+  <main class="scene" id="scene"></main>
+
+  <footer class="pied">
+    <div class="pied__adresse">66 bd Foch, Salon-de-Provence &middot; 7j/7 dès 17h</div>
+    <div class="pastilles" id="pastilles"></div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // ---------------------------------------------------------------
+  // LES DONNÉES. Un seul endroit à toucher.
+  //
+  // matchs  : relevés et recoupés sur trois sources le 23/10/2026
+  //           (L'Équipe, Footamax, billetterie officielle de l'OM).
+  //           Mêmes données que le lot d'affiches « jour de match ».
+  // soirees : les familles sont réelles, relevées sur sa production
+  //           Facebook et Instagram de février à octobre 2026.
+  //           LES DATES SONT DES EMPLACEMENTS, marqués `exemple: true`,
+  //           tant que sa prog du mois n'a pas été relevée.
+  // ---------------------------------------------------------------
+
+  // Les donnees vivent maintenant dans evenements.json, a cote de cette page.
+  // Mettre a jour la prog du bar = editer ce seul fichier. La page le relit
+  // toute seule, sans qu'on touche ni a la page ni a l'ecran du bar.
+
+  var MATCHS = [];
+  var SOIREES = [];
+  var CLASSEMENT = { exemple: true, manche: "", equipes: [] };
+  var INSCRIPTION = { url: "", libelle: "" };
+
+  var SOURCE_DONNEES = "evenements.json";
+  var PERIODE_RELECTURE = 600000; // 10 minutes
+
+  var DUREE_PANNEAU = 12000;
+
+  // ---------------------------------------------------------------
+  // Dates
+  // ---------------------------------------------------------------
+
+  function clefDuJour(d) {
+    var m = String(d.getMonth() + 1);
+    var j = String(d.getDate());
+    return d.getFullYear() + "-" + (m.length < 2 ? "0" + m : m) + "-" + (j.length < 2 ? "0" + j : j);
+  }
+
+  function dateDepuisClef(clef) {
+    var p = clef.split("-");
+    return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  }
+
+  function formate(clef, options) {
+    try {
+      return new Intl.DateTimeFormat("fr-FR", options).format(dateDepuisClef(clef));
+    } catch (e) {
+      return clef;
+    }
+  }
+
+  function majuscule(t) {
+    return t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+  }
+
+  var AUJOURDHUI = clefDuJour(new Date());
+
+  function evenementsDuJour(clef) {
+    var liste = [];
+    MATCHS.forEach(function (m) {
+      if (m.date === clef) {
+        liste.push({
+          type: "match",
+          heure: m.heure,
+          titre: m.domicile + " – " + m.exterieur,
+          detail: m.competition + ", " + m.journee,
+          exemple: false,
+          match: m
+        });
+      }
+    });
+    SOIREES.forEach(function (s) {
+      if (s.date === clef) {
+        liste.push({
+          type: "soiree",
+          heure: s.heure,
+          titre: s.titre,
+          detail: s.detail,
+          exemple: !!s.exemple
+        });
+      }
+    });
+    return liste;
+  }
+
+  function prochainMatch() {
+    for (var i = 0; i < MATCHS.length; i++) {
+      if (MATCHS[i].date >= AUJOURDHUI) return MATCHS[i];
+    }
+    return null;
+  }
+
+  // ---------------------------------------------------------------
+  // Les panneaux
+  // ---------------------------------------------------------------
+
+  function marqueurExemple() {
+    return '<span class="exemple">Exemple</span>';
+  }
+
+  function panneauCeSoir() {
+    var liste = evenementsDuJour(AUJOURDHUI);
+    var jour = majuscule(formate(AUJOURDHUI, { weekday: "long", day: "numeric", month: "long" }));
+
+    if (!liste.length) {
+      var suivant = null;
+      var curseur = dateDepuisClef(AUJOURDHUI);
+      for (var i = 1; i <= 60 && !suivant; i++) {
+        curseur.setDate(curseur.getDate() + 1);
+        var clef = clefDuJour(curseur);
+        var evs = evenementsDuJour(clef);
+        if (evs.length) suivant = { clef: clef, ev: evs[0] };
+      }
+      return '' +
+        '<p class="eyebrow">Ce soir &middot; ' + jour + '</p>' +
+        '<h1 class="titre-geant">Les pompes sont ouvertes</h1>' +
+        '<p class="sous-titre">Pas de soirée au programme. Deux cibles DARTSLIVE3, la carte au comptoir, et vous servez à votre table.</p>' +
+        (suivant ?
+          '<dl class="coup-denvoi">' +
+            '<div><dt>Prochain rendez-vous</dt><dd>' + majuscule(formate(suivant.clef, { weekday: "long", day: "numeric", month: "long" })) + '</dd></div>' +
+            '<div><dt>' + (suivant.ev.type === "match" ? "Coup d\'envoi" : "À partir de") + '</dt><dd class="accent">' + suivant.ev.heure + '</dd></div>' +
+          '</dl>' +
+          '<p class="note-source">' + suivant.ev.titre + (suivant.ev.exemple ? ' ' + marqueurExemple() : '') + '</p>'
+          : '');
+    }
+
+    var ev = liste[0];
+    return '' +
+      '<p class="eyebrow">Ce soir &middot; ' + jour + '</p>' +
+      '<h1 class="titre-geant">' + ev.titre + '</h1>' +
+      (ev.detail ? '<p class="sous-titre">' + ev.detail + '</p>' : '') +
+      '<dl class="coup-denvoi">' +
+        '<div><dt>' + (ev.type === "match" ? "Coup d\'envoi" : "À partir de") + '</dt><dd class="accent">' + ev.heure + '</dd></div>' +
+        '<div><dt>Ouvert</dt><dd>dès 17h</dd></div>' +
+      '</dl>' +
+      (ev.exemple ? '<p class="note-source">' + marqueurExemple() + ' Cette soirée vient de sa prog du mois, pas encore relevée.</p>' : '');
+  }
+
+  function panneauMatch() {
+    var m = prochainMatch();
+    if (!m) {
+      return '' +
+        '<p class="eyebrow">Jour de match</p>' +
+        '<h1 class="titre-geant">Calendrier à prolonger</h1>' +
+        '<p class="sous-titre">Le lot s\'arrête au 13 décembre : la LFP n\'a pas encore programmé les journées suivantes.</p>';
+    }
+    return '' +
+      '<p class="eyebrow">Jour de match &middot; ' + m.competition + ', ' + m.journee + '</p>' +
+      '<div class="affiche">' +
+        '<div class="equipe">' + m.domicile + '</div>' +
+        '<div class="vs"><span>VS</span></div>' +
+        '<div class="equipe">' + m.exterieur + '</div>' +
+      '</div>' +
+      '<dl class="coup-denvoi">' +
+        '<div><dt>' + majuscule(formate(m.date, { weekday: "long" })) + '</dt><dd>' + formate(m.date, { day: "numeric", month: "long" }) + '</dd></div>' +
+        '<div><dt>Coup d\'envoi</dt><dd class="accent">' + m.heure + '</dd></div>' +
+      '</dl>' +
+      '<p class="note-source">Sur écran au bar. Date et horaire recoupés sur trois sources.</p>';
+  }
+
+  function panneauSemaine() {
+    var lignes = "";
+    var curseur = dateDepuisClef(AUJOURDHUI);
+    var trouve = 0;
+
+    for (var i = 0; i < 7; i++) {
+      var clef = clefDuJour(curseur);
+      var evs = evenementsDuJour(clef);
+      var libelle = majuscule(formate(clef, { weekday: "short", day: "numeric" }));
+
+      if (evs.length) {
+        for (var k = 0; k < evs.length; k++) {
+          var ev = evs[k];
+          trouve++;
+          lignes += '' +
+            '<div class="jour" data-match="' + (ev.type === "match" ? "oui" : "non") + '" data-aujourdhui="' + (clef === AUJOURDHUI ? "oui" : "non") + '">' +
+              '<div class="jour__date">' + libelle + '</div>' +
+              '<div class="jour__quoi">' + ev.titre + (ev.detail ? ' <em>&middot; ' + ev.detail + '</em>' : '') + (ev.exemple ? ' ' + marqueurExemple() : '') + '</div>' +
+              '<div class="jour__heure">' + ev.heure + '</div>' +
+            '</div>';
+        }
+      } else {
+        lignes += '' +
+          '<div class="jour" data-match="non" data-aujourdhui="' + (clef === AUJOURDHUI ? "oui" : "non") + '">' +
+            '<div class="jour__date">' + libelle + '</div>' +
+            '<div class="jour__quoi"><em>Bar ouvert, fléchettes et pompes</em></div>' +
+            '<div class="jour__heure">17h</div>' +
+          '</div>';
+      }
+      curseur.setDate(curseur.getDate() + 1);
+    }
+
+    return '' +
+      '<p class="eyebrow">Les sept prochains jours</p>' +
+      '<div class="semaine">' + lignes + '</div>' +
+      '<p class="note-source">Une seule saisie du mois alimente cet écran, les affiches et le rappel aux inscrits.</p>';
+  }
+
+  function panneauClassement() {
+    var lignes = "";
+    CLASSEMENT.equipes.forEach(function (e, i) {
+      lignes += '' +
+        '<div class="ligne" data-rang="' + (i + 1) + '">' +
+          '<div class="ligne__rang">' + (i + 1) + '</div>' +
+          '<div class="ligne__equipe">' + e.equipe + '</div>' +
+          '<div class="ligne__stat">' + e.joues + ' manches</div>' +
+          '<div class="ligne__pts">' + e.pts + ' pts</div>' +
+        '</div>';
+    });
+
+    return '' +
+      '<p class="eyebrow">Ligue des fléchettes &middot; ' + CLASSEMENT.manche + '</p>' +
+      '<h1 class="titre-geant" style="font-size:clamp(1.6rem,4.4vw,3.2rem)">Le classement</h1>' +
+      '<div class="classement">' + lignes + '</div>' +
+      '<p class="note-source">' + (CLASSEMENT.exemple ? marqueurExemple() + ' ' : '') +
+        'Rendu d\'exemple. Les scores se lisent sur les cartes des deux cibles DARTSLIVE3 du bar.</p>';
+  }
+
+  function panneauInscription() {
+    return '' +
+      '<p class="eyebrow">Garde ta place</p>' +
+      '<div class="inscription">' +
+        '<div class="qr-cadre" id="qr"><div class="qr-repli">' + INSCRIPTION.libelle + '</div></div>' +
+        '<div class="inscription__texte">' +
+          '<h1 class="titre-geant" style="font-size:clamp(1.7rem,4.8vw,3.6rem)">Inscris ton équipe</h1>' +
+          '<p class="sous-titre">Le classement, la date de la prochaine manche et la prog du mois. Un scan, et tu es prévenu la veille.</p>' +
+        '</div>' +
+      '</div>' +
+      '<p class="note-source">' + marqueurExemple() + ' Le QR pointe vers son Instagram tant que la page d\'inscription n\'existe pas. C\'est elle qui construira la liste de contacts du bar.</p>';
+  }
+
+  var PANNEAUX = [panneauCeSoir, panneauMatch, panneauSemaine, panneauClassement, panneauInscription];
+
+  // ---------------------------------------------------------------
+  // Montage et rotation
+  // ---------------------------------------------------------------
+
+  var scene = document.getElementById("scene");
+  var pastilles = document.getElementById("pastilles");
+  var index = 0;
+  var minuterie = null;
+
+  function monte() {
+    AUJOURDHUI = clefDuJour(new Date());
+    scene.innerHTML = "";
+    pastilles.innerHTML = "";
+    index = 0;
+
+    PANNEAUX.forEach(function (fabrique, i) {
+    var el = document.createElement("section");
+    el.className = "panneau";
+    el.setAttribute("data-actif", i === 0 ? "oui" : "non");
+    el.innerHTML = fabrique();
+    scene.appendChild(el);
+
+    var p = document.createElement("div");
+    p.className = "pastille";
+    p.setAttribute("data-actif", i === 0 ? "oui" : "non");
+    p.style.setProperty("--duree", (DUREE_PANNEAU / 1000) + "s");
+    p.innerHTML = "<i></i>";
+    pastilles.appendChild(p);
+    });
+
+    dessineQr();
+
+    if (minuterie) { clearInterval(minuterie); }
+    minuterie = setInterval(function () {
+      index = (index + 1) % PANNEAUX.length;
+      montre(index);
+    }, DUREE_PANNEAU);
+  }
+
+  function montre(n) {
+    var sections = scene.children;
+    var puces = pastilles.children;
+    for (var i = 0; i < sections.length; i++) {
+      sections[i].setAttribute("data-actif", i === n ? "oui" : "non");
+    }
+    for (var k = 0; k < puces.length; k++) {
+      if (k === n) {
+        // relance l'animation de la barre
+        var neuve = puces[k].cloneNode(true);
+        neuve.setAttribute("data-actif", "oui");
+        pastilles.replaceChild(neuve, puces[k]);
+      } else {
+        puces[k].setAttribute("data-actif", "non");
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // Lecture des donnees, et relecture periodique
+  // ---------------------------------------------------------------
+
+  function panneauDAttente(message) {
+    scene.innerHTML =
+      '<section class="panneau" data-actif="oui">' +
+        '<p class="eyebrow">Au Fut et a Mesure</p>' +
+        '<h1 class="titre-geant">Les pompes sont ouvertes</h1>' +
+        '<p class="note-source">' + message + '</p>' +
+      '</section>';
+  }
+
+  function chargeEtMonte() {
+    fetch(SOURCE_DONNEES + "?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) { throw new Error("HTTP " + r.status); }
+        return r.json();
+      })
+      .then(function (d) {
+        MATCHS = d.matchs || [];
+        SOIREES = d.soirees || [];
+        if (d.classement) { CLASSEMENT = d.classement; }
+        if (d.inscription) { INSCRIPTION = d.inscription; }
+        monte();
+      })
+      .catch(function (e) {
+        // Premier chargement rate : on affiche un repli plutot qu'un ecran noir.
+        // Relecture ratee alors que la page tourne : on garde l'affichage en place.
+        if (!scene.children.length) {
+          panneauDAttente("Le programme se recharge dans un instant.");
+        }
+      });
+  }
+
+  panneauDAttente("Chargement du programme.");
+  chargeEtMonte();
+  setInterval(chargeEtMonte, PERIODE_RELECTURE);
+
+  // ---------------------------------------------------------------
+  // Horloge
+  // ---------------------------------------------------------------
+
+  function tic() {
+    var maintenant = new Date();
+    var elJour = document.getElementById("date-jour");
+    var elHeure = document.getElementById("date-heure");
+    try {
+      elJour.textContent = majuscule(new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(maintenant));
+      elHeure.textContent = new Intl.DateTimeFormat("fr-FR", { hour: "2-digit", minute: "2-digit" }).format(maintenant);
+    } catch (e) {
+      elHeure.textContent = maintenant.getHours() + "h" + (maintenant.getMinutes() < 10 ? "0" : "") + maintenant.getMinutes();
+    }
+  }
+
+  tic();
+  setInterval(tic, 10000);
+
+  // ---------------------------------------------------------------
+  // QR, avec repli si la librairie ne charge pas
+  // ---------------------------------------------------------------
+
+  function dessineQr() {
+    var hote = document.getElementById("qr");
+    if (!hote || typeof QRCode === "undefined") return;
+    hote.innerHTML = "";
+    try {
+      new QRCode(hote, {
+        text: INSCRIPTION.url,
+        width: 200,
+        height: 200,
+        colorDark: "#15100F",
+        colorLight: "#F3EDE3",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch (e) {
+      hote.innerHTML = '<div class="qr-repli">' + INSCRIPTION.libelle + '</div>';
+    }
+  }
+
+</script>
+</body>
+</html>
