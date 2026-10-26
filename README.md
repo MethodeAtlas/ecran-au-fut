@@ -1,6 +1,6 @@
 # Écran de salle, Au Fût et à Mesure
 
-Boucle d'affichage pour la salle du bar (Salon-de-Provence). Cinq panneaux qui tournent
+Boucle d'affichage pour la salle du bar (Salon-de-Provence). Six panneaux qui tournent
 en continu, douze secondes chacun, à la charte relevée sur ses affiches.
 
 Item 14 du catalogue du projet « Vendre de l'automatisation aux commerçants locaux ».
@@ -24,7 +24,13 @@ se fait donc en éditant ce seul fichier, sans toucher ni à la page ni à l'éc
   la page, à retirer quand la date est confirmée.
 - `classement` : la ligue de fléchettes. `exemple: true` tant qu'il n'est pas lu
   depuis la source réelle.
-- `inscription` : la destination du QR.
+- `regles` : les quatre lignes du panneau « Comment ça marche ici ». `exemple: true`
+  tant que leurs valeurs n'ont pas été confirmées par le gérant, elles sont pour
+  l'instant déduites de ses avis Google et de sa fiche.
+- `qr` : la destination du QR, plus le bandeau, le titre et le texte de son panneau.
+  Il ouvre le formulaire d'avis de la fiche Google du bar.
+- `inscription` : l'ancienne destination du QR, conservée pour mémoire. Basculer le QR
+  vers l'inscription à la ligue se fait en recopiant son `url` et son `libelle` dans `qr`.
 
 **Ce qui n'est pas sourcé porte `exemple: true` et s'affiche comme tel.** Les 9 matchs
 sont réels, recoupés le 23/10/2026 sur L'Équipe, Footamax et la billetterie de l'OM.
