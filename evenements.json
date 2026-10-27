@@ -1,6 +1,6 @@
 {
-  "maj": "2026-10-26",
-  "commentaire": "Matchs releves et recoupes le 23/10/2026 sur L'Equipe, Footamax et la billetterie de l'OM. Les familles de soirees sont reelles, LEURS DATES SONT DES EMPLACEMENTS tant que la prog du mois n'est pas relevee. Le classement est un rendu d'exemple.",
+  "maj": "2026-10-27",
+  "commentaire": "Matchs releves et recoupes le 23/10/2026 sur L'Equipe, Footamax et la billetterie de l'OM. Soirees relevees le 27/10/2026 sur Instagram @aufut_salon et le profil Facebook de Romain Pascal : DJ Toenn le 30/10 et Halloween le 31/10 sont annonces nommement, le blind test du mercredi et Simon B du samedi sont ecrits dans sa Prog' du mois d'octobre comme recurrents. LA PROG' DE NOVEMBRE N'EST PAS ENCORE PUBLIEE : celle d'octobre est sortie le 30 septembre, donc celle de novembre sortira vers le 30/10. Les horaires 20h00 des deux recurrents sont le standard de ses affiches, ils ne sont pas publies pour eux : A CONFIRMER. Le classement est un rendu d'exemple.",
   "matchs": [
     {
       "date": "2026-11-01",
@@ -77,60 +77,94 @@
   ],
   "soirees": [
     {
-      "date": "2026-10-27",
-      "heure": "20h00",
-      "titre": "Tournoi de fléchettes",
-      "detail": "Manche 3 de la ligue",
-      "exemple": true
-    },
-    {
       "date": "2026-10-28",
-      "heure": "20h30",
-      "titre": "Blind test",
-      "detail": "Équipes de 2 à 6",
-      "exemple": true
-    },
-    {
-      "date": "2026-10-29",
       "heure": "20h00",
-      "titre": "Beer pong",
-      "detail": "Tableau à 16 équipes",
-      "exemple": true
+      "titre": "Blind test",
+      "detail": "Tous les mercredis"
     },
     {
       "date": "2026-10-30",
-      "heure": "21h00",
-      "titre": "Soirée DJ",
-      "detail": "",
-      "exemple": true
+      "heure": "20h00",
+      "titre": "DJ Toenn",
+      "detail": "Deux nouveaux cocktails"
     },
     {
       "date": "2026-10-31",
-      "heure": "21h00",
+      "heure": "19h00",
       "titre": "Halloween",
-      "detail": "Déguisement conseillé",
-      "exemple": true
-    },
-    {
-      "date": "2026-11-03",
-      "heure": "20h00",
-      "titre": "Tournoi de fléchettes",
-      "detail": "Manche 4 de la ligue",
-      "exemple": true
+      "detail": "Déguisement conseillé"
     },
     {
       "date": "2026-11-04",
-      "heure": "20h30",
+      "heure": "20h00",
       "titre": "Blind test",
-      "detail": "Équipes de 2 à 6",
-      "exemple": true
+      "detail": "Tous les mercredis"
     },
     {
-      "date": "2026-11-06",
-      "heure": "21h00",
-      "titre": "Soirée DJ",
-      "detail": "",
-      "exemple": true
+      "date": "2026-11-07",
+      "heure": "20h00",
+      "titre": "Simon B aux platines",
+      "detail": "Tous les samedis"
+    },
+    {
+      "date": "2026-11-11",
+      "heure": "20h00",
+      "titre": "Blind test",
+      "detail": "Tous les mercredis"
+    },
+    {
+      "date": "2026-11-14",
+      "heure": "20h00",
+      "titre": "Simon B aux platines",
+      "detail": "Tous les samedis"
+    },
+    {
+      "date": "2026-11-18",
+      "heure": "20h00",
+      "titre": "Blind test",
+      "detail": "Tous les mercredis"
+    },
+    {
+      "date": "2026-11-21",
+      "heure": "20h00",
+      "titre": "Simon B aux platines",
+      "detail": "Tous les samedis"
+    },
+    {
+      "date": "2026-11-25",
+      "heure": "20h00",
+      "titre": "Blind test",
+      "detail": "Tous les mercredis"
+    },
+    {
+      "date": "2026-11-28",
+      "heure": "20h00",
+      "titre": "Simon B aux platines",
+      "detail": "Tous les samedis"
+    },
+    {
+      "date": "2026-12-02",
+      "heure": "20h00",
+      "titre": "Blind test",
+      "detail": "Tous les mercredis"
+    },
+    {
+      "date": "2026-12-05",
+      "heure": "20h00",
+      "titre": "Simon B aux platines",
+      "detail": "Tous les samedis"
+    },
+    {
+      "date": "2026-12-09",
+      "heure": "20h00",
+      "titre": "Blind test",
+      "detail": "Tous les mercredis"
+    },
+    {
+      "date": "2026-12-12",
+      "heure": "20h00",
+      "titre": "Simon B aux platines",
+      "detail": "Tous les samedis"
     }
   ],
   "classement": {
